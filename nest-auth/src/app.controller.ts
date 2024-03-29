@@ -1,12 +1,14 @@
 import { Controller, Post, UseGuards, Injectable, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from './auth/auth.service';
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {}
-//
 
 @Controller()
 export class AppController {
+  constructor(private authService: AuthService) {}
+
   @UseGuards(LocalAuthGuard)
   /**
    * 로컬 가드
@@ -16,6 +18,7 @@ export class AppController {
    */
   @Post('auth/login')
   async login(@Body() requestUserInfo) {
-    return requestUserInfo;
+    // return requestUserInfo;
+    return this.authService.login(requestUserInfo);
   }
 }
