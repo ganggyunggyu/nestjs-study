@@ -5,6 +5,8 @@ import { LocalStrategy } from './storage/local. strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
+import { JwtStrategy } from './storage/jwt.strategy';
+import { ConfigModule } from '@nestjs/config';
 
 /**
  * 앱은 두가지 상태로 존재한다.
@@ -32,16 +34,18 @@ import { jwtConstants } from './constants';
 
 @Module({
   imports: [
-    UsersModule,
     PassportModule,
+    ConfigModule,
     JwtModule.register({
+      // secret: process.env.JWT_SECRET,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '300s' },
     }),
+    UsersModule,
   ],
-  providers: [AuthService, LocalStrategy, JwtModule],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   //LocalStrategy 구현을 사용할 수 있도록 업데이트
-  exports: [AuthService, JwtModule, PassportModule],
+  exports: [AuthService],
   //내보내기
 })
 export class AuthModule {}
